@@ -12,4 +12,6 @@ public interface ProductService {
     Product addProduct(String name, double price, String description, String category, String imageUrl);
 
     List<Product> getAllProducts();
+
+//    void updateProduct(Long id);
 }

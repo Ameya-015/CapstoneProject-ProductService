@@ -1,11 +1,13 @@
 package com.capstone.capstoneproject_ecomapp.controllers;
 
 import com.capstone.capstoneproject_ecomapp.dtos.ErrorDto;
+import com.capstone.capstoneproject_ecomapp.dtos.FakeStoreProductDto;
 import com.capstone.capstoneproject_ecomapp.dtos.ProductResponseDto;
 import com.capstone.capstoneproject_ecomapp.exceptions.ProductNotFoundException;
 import com.capstone.capstoneproject_ecomapp.models.Product;
 import com.capstone.capstoneproject_ecomapp.dtos.FakeStoreProductRequest;
 import com.capstone.capstoneproject_ecomapp.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class ProductController {
 
     ProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("productDbService") ProductService productService) {
         this.productService = productService;
     }
 
@@ -56,5 +58,13 @@ public class ProductController {
 
         return productResponseDto;
     }
+
+//    @PutMapping("/products/{id}")
+//    public ProductResponseDto updateProduct(@PathVariable Long id) {
+//
+////        Product product = productService.updateProduct(id);
+//        ProductResponseDto productResponseDto = ProductResponseDto.fromProduct(product);
+//        return productResponseDto;
+//    }
 
 }
