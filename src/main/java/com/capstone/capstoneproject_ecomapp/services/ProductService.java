@@ -5,6 +5,7 @@ import com.capstone.capstoneproject_ecomapp.exceptions.ProductNotFoundException;
 import com.capstone.capstoneproject_ecomapp.models.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     Product getProductById(long id) throws ProductNotFoundException;
@@ -13,5 +14,6 @@ public interface ProductService {
 
     List<Product> getAllProducts();
 
+    Product updateProduct(long id, Product productToUpdate);
 //    void updateProduct(Long id);
 }

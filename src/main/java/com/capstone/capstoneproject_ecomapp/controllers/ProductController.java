@@ -51,11 +51,25 @@ public class ProductController {
 
     @PostMapping("/products")
     public ProductResponseDto addProduct(@RequestBody FakeStoreProductRequest fakeStoreProductRequest) {
-        Product product = productService.addProduct(fakeStoreProductRequest.getName(), fakeStoreProductRequest.getPrice(), fakeStoreProductRequest.getDescription(),
-                fakeStoreProductRequest.getCategory(), fakeStoreProductRequest.getImageUrl());
+        Product product = productService.addProduct(
+                fakeStoreProductRequest.getName(),
+                fakeStoreProductRequest.getPrice(),
+                fakeStoreProductRequest.getDescription(),
+                fakeStoreProductRequest.getCategory(),
+                fakeStoreProductRequest.getImageUrl());
 
         ProductResponseDto productResponseDto = ProductResponseDto.fromProduct(product);
 
+        return productResponseDto;
+    }
+
+    @PutMapping("/products/{id}")
+    public ProductResponseDto updateProduct(@PathVariable long id,
+                                            @RequestBody FakeStoreProductRequest fakeStoreProductRequestDto) {
+        Product product = FakeStoreProductRequest.toProduct(fakeStoreProductRequestDto);
+        Product updatedProduct = productService.updateProduct(id, product);
+
+        ProductResponseDto productResponseDto = ProductResponseDto.fromProduct(updatedProduct);
         return productResponseDto;
     }
 
