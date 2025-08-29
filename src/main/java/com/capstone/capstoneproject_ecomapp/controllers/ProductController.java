@@ -42,10 +42,12 @@ public class ProductController {
         List<Product> productList = productService.getAllProducts();
 
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+
         for(Product product : productList) {
             ProductResponseDto productResponseDto = ProductResponseDto.fromProduct(product);
             productResponseDtoList.add(productResponseDto);
         }
+        
         return productResponseDtoList;
     }
 
