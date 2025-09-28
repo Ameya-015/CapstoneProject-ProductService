@@ -5,8 +5,12 @@ import com.capstone.capstoneproject_ecomapp.dtos.*;
 import com.capstone.capstoneproject_ecomapp.exceptions.InvalidTokenException;
 import com.capstone.capstoneproject_ecomapp.exceptions.ProductNotFoundException;
 import com.capstone.capstoneproject_ecomapp.models.Product;
+import com.capstone.capstoneproject_ecomapp.services.FakeStoreProductService;
+import com.capstone.capstoneproject_ecomapp.services.ProductDBService;
 import com.capstone.capstoneproject_ecomapp.services.ProductService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +21,26 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    ProductService productService;
+    ProductDBService productService;
 
     AuthCommons authCommons;
 
-    public ProductController(@Qualifier("productDbService") ProductService productService, AuthCommons authCommons) {
+    public ProductController(@Qualifier("productDbService") ProductDBService productService, AuthCommons authCommons) {
         this.productService = productService;
         this.authCommons = authCommons;
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable long id, @RequestHeader("token") String token) throws ProductNotFoundException {
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable long id) throws ProductNotFoundException {
         //Jackson library is used to convert the object to JSON format
 
-        UserDto userDto = authCommons.validateToken(token);
+        /*UserDto userDto = authCommons.validateToken(token);
 
         if(userDto == null) {
             throw new InvalidTokenException("Token is invalid");
-        }
+        }*/
+
+
 
         Product product = productService.getProductById(id);
         ProductResponseDto productResponseDto = ProductResponseDto.fromProduct(product);
@@ -91,4 +97,8 @@ public class ProductController {
 //        return productResponseDto;
 //    }
 
+    @GetMapping("/title/{title}/{pageNumber}/{pageSize}")
+    public Page<Product> getProductsByTitle(@PathVariable("title") String title, @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize) {
+        return productService.getProductByTitle(title, pageNumber, pageSize);
+    }
 }

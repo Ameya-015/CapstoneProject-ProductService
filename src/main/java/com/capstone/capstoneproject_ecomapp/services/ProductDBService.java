@@ -5,6 +5,9 @@ import com.capstone.capstoneproject_ecomapp.models.Category;
 import com.capstone.capstoneproject_ecomapp.models.Product;
 import com.capstone.capstoneproject_ecomapp.repositories.CategoryRepository;
 import com.capstone.capstoneproject_ecomapp.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,6 +79,13 @@ public class ProductDBService implements ProductService{
         product.setCategory(categoryObj);
 
         return productRepository.save(product);
+    }
+
+    @Override
+    public Page<Product> getProductByTitle(String title, int pageNumber, int pageSize) {
+        Page requestedPage =  productRepository.findByNameContainsIgnoreCase(title,
+                PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "names")));
+        return requestedPage;
     }
 
    /* public Product updateHelper(long id ,Product product) {

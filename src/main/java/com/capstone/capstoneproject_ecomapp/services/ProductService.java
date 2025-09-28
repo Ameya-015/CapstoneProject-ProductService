@@ -1,11 +1,10 @@
 package com.capstone.capstoneproject_ecomapp.services;
 
-import com.capstone.capstoneproject_ecomapp.dtos.FakeStoreProductDto;
 import com.capstone.capstoneproject_ecomapp.exceptions.ProductNotFoundException;
 import com.capstone.capstoneproject_ecomapp.models.Product;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
     Product getProductById(long id) throws ProductNotFoundException;
@@ -16,4 +15,6 @@ public interface ProductService {
 
     Product updateProduct(long id, Product productToUpdate);
 //    void updateProduct(Long id);
+
+    Page<Product> getProductByTitle(String title, int pageNumber, int pageSize);
 }

@@ -4,16 +4,21 @@ import com.capstone.capstoneproject_ecomapp.dtos.FakeStoreProductDto;
 import com.capstone.capstoneproject_ecomapp.dtos.FakeStoreProductResponse;
 import com.capstone.capstoneproject_ecomapp.exceptions.ProductNotFoundException;
 import com.capstone.capstoneproject_ecomapp.models.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService{
     RestTemplate restTemplate;
+    @Autowired
+    RedisTemplate<String, Object> redisTemplate;
 
     public FakeStoreProductService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -21,12 +26,22 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public Product getProductById(long id) throws ProductNotFoundException {
+
+        Product product = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCT_"+id);
+
+        if (product != null) {
+            return product;
+        }
+
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(
               "https://fakestoreapi.com/products/"+id,
                 FakeStoreProductDto.class);
         if(fakeStoreProductDto == null) {
             throw new ProductNotFoundException("Product for id "+id+" does not exist");
         }
+
+        redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_"+id, product);
+
         return fakeStoreProductDto.toProduct();
     }
 
@@ -60,6 +75,11 @@ public class FakeStoreProductService implements ProductService{
     @Override
     public Product updateProduct(long id, Product productToUpdate) {
         return null;
+    }
+
+    @Override
+    public Page<Product> getProductByTitle(String title, int pageNumber, int pageSize) {
+        return Page.empty();
     }
 
 //    @Override
